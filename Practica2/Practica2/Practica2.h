@@ -1,3 +1,5 @@
+int mostrarMenu();
+int mostrarOperaciones();
 void imprimirMatriz(float** matriz);
 float** AsignarMatriz();
 float** LlenarMatriz(float** matriz);
