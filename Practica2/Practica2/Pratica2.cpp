@@ -46,7 +46,8 @@ int main()
 			cout << endl << "Escoja la matriz a imprimir:" << endl;
 			cout << "1) Matriz #1" << endl;
 			cout << "2) Matriz #2" << endl;
-			cout << "3) Matriz Resultado" << endl << endl;
+			cout << "3) Matriz Resultado" << endl;
+			cout << "4) Volver al menu." << endl << endl;
 			cout << "Opcion:";
 			cin >> input;
 			if (input == 1) {
@@ -55,7 +56,7 @@ int main()
 			else if (input == 2) {
 				imprimirMatriz(matriz2);
 			}
-			else {
+			else if(input == 3){
 				imprimirMatriz(matrizResultado);
 			}
 			break;
@@ -148,30 +149,33 @@ int mostrarOperaciones() {
 
 void imprimirMatriz(float** matriz) {
 	for (int i = 0; i < mSize; ++i){
-		cout << "Fila " << i << endl;
+		cout << endl;
 		for (int j = 0; j < mSize; ++j){
-			cout << "Columna " << j << endl;
-			cout << matriz[i][j] << endl;
+			cout << matriz[i][j] << "\t";
 		}
 	}
+	cout << endl;
 }
 
 float** AsignarMatriz() {
 	float** matriz;
 	matriz = new float*[mSize];
-
 	for (int i = 0; i < mSize; ++i)
 	{
 		matriz[i] = new float[mSize];
+	}
+	for (int i = 0; i < mSize; ++i) {
+		for (int j = 0; j < mSize; ++j) {
+			matriz[i][j] = 0.0;
+		}
 	}
 	return matriz;
 }
 
 float** LlenarMatriz(float** matriz) {
 	for (int i = 0; i < mSize; ++i) {
-		cout << "Fila " << i << " " << endl;
 		for (int j = 0; j < mSize; ++j) {
-			cout << "Columna " << j << " " << endl;
+			cout << "[" << i << "][" << j << "]: ";
 			cin >> matriz[i][j];
 		}
 	}
