@@ -1,11 +1,10 @@
 #include "iostream"
+#include "Practica2.h"
 #define mSize 4
 
 using namespace std;
 
-float** inicializarMatriz();
-
-int main(int argc, char* argv[])
+int main()
 {
 
 	cout << "Ingrese 0 para entrar la matriz elemento por elemento." << endl;
@@ -23,13 +22,15 @@ int main(int argc, char* argv[])
 	{
 	case 0:
 		cout << "Ingrese los valores para la matriz #1" << endl;
-		matriz1 = inicializarMatriz();
+		matriz1 = AsignarMatriz();
+		matriz1 = LlenarMatriz(matriz1);
 		cout << "Ingrese los valores para la matriz #2" << endl;
-		matriz2 = inicializarMatriz();
+		matriz2 = AsignarMatriz();
+		matriz2 = LlenarMatriz(matriz2);
 	case 1:
 		//Ingresar toda la matriz
 	default:
-		//Excepción
+		Excepción
 		break;
 	}
 
@@ -37,6 +38,9 @@ int main(int argc, char* argv[])
 	int operacion;
 	cin >> operacion;
 
+	matrizResultado = AsignarMatriz();
+
+	// Esto no es así porque hay que iterar en Assembler.
 	switch (operacion)
 	{
 	case 0:
@@ -91,8 +95,7 @@ void imprimirMatriz(float** matriz) {
 	}
 }
 
-float** inicializarMatriz() {
-
+float** AsignarMatriz() {
 	float** matriz;
 	matriz = new float*[mSize];
 
@@ -100,6 +103,10 @@ float** inicializarMatriz() {
 	{
 		matriz[i] = new float[mSize];
 	}
+	return matriz;
+}
+
+float** LlenarMatriz(float** matriz) {
 	for (int i = 0; i < mSize; ++i) {
 		cout << "Fila " << i << " " << endl;
 		for (int j = 0; j < mSize; ++j) {
@@ -116,7 +123,7 @@ float pSuma(float numA, float numB) {
 
 	}
 
-	return;
+	return 0.0;
 }
 
 float pResta(float numA, float numB) {
@@ -125,7 +132,7 @@ float pResta(float numA, float numB) {
 
 	}
 
-	return;
+	return 0.0;
 }
 
 float pMultiplicacion(float numA, float numB) {
@@ -134,7 +141,7 @@ float pMultiplicacion(float numA, float numB) {
 
 	}
 
-	return;
+	return 0.0;
 }
 
 float pDivision(float numA, float numB) {
@@ -143,5 +150,5 @@ float pDivision(float numA, float numB) {
 
 	}
 
-	return;
+	return 0.0;
 }
