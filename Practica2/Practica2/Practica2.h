@@ -3,6 +3,7 @@ int mostrarOperaciones();
 void imprimirMatriz(float** matriz);
 float** AsignarMatriz();
 float** LlenarMatriz(float** matriz);
+void expMatrices(float** matriz1, float** matriz2);
 float pSuma(float numA, float numB);
 float pResta(float numA, float numB);
 float pMultiplicacion(float numA, float numB);

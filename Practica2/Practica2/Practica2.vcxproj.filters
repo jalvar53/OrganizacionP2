@@ -24,4 +24,9 @@
       <Filter>Archivos de código fuente</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <MASM Include="Operaciones.asm">
+      <Filter>Archivos de código fuente</Filter>
+    </MASM>
+  </ItemGroup>
 </Project>

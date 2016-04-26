@@ -10,14 +10,12 @@ int main()
 	int operacion;
 	float** matriz1 = AsignarMatriz();
 	float** matriz2 = AsignarMatriz();
-	float** matrizResultado = AsignarMatriz();;
-	float resultado;
+	float** matrizResultado = AsignarMatriz();
 
 	while(true){ // El programa correra hasta que el usuario escoja cerrarlo
 		input = mostrarMenu(); // Muestra las opciones
 		operacion = 0; // Limpia la operacion anterior si es que existe
-		switch (input) // Escoge la opcion que recibio en MostrarMenu();
-		{
+		switch (input){ // Escoge la opcion que recibio en MostrarMenu();
 		case 1:
 			// Ingresar matriz dato a dato
 			cout << endl << "Escoja la matriz a llenar:" << endl;
@@ -83,36 +81,24 @@ int main()
 
 		if (operacion != 0) {
 			// Esto no es así porque hay que iterar en Assembler.
-			switch (input)
-			{
+			expMatrices(matriz1,matriz2); //Carga las matrices en posiciones accesibles desde ASM
+			switch (input){
 			case 0:
-				for (int i = 0; i < mSize; ++i) {
-					for (int j = 0; j < mSize; ++j) {
-						resultado = pSuma(matriz1[i][j], matriz2[i][j]);
-						matrizResultado[i][j] = resultado;
-					}
-				}
+				//Suma en ASM
+				matrizResultado[0][0] = pSuma(matriz1[0][0], matriz2[0][0]);
+				break;
 			case 1:
-				for (int i = 0; i < mSize; ++i) {
-					for (int j = 0; j < mSize; ++j) {
-						resultado = pResta(matriz1[i][j], matriz2[i][j]);
-						matrizResultado[i][j] = resultado;
-					}
-				}
+				//Resta en ASM
+				matrizResultado[0][0] = pResta(matriz1[0][0], matriz2[0][0]);
+				break;
 			case 2:
-				for (int i = 0; i < mSize; ++i) {
-					for (int j = 0; j < mSize; ++j) {
-						resultado = pMultiplicacion(matriz1[i][j], matriz2[i][j]);
-						matrizResultado[i][j] = resultado;
-					}
-				}
+				//Multiplicacion en ASM
+				matrizResultado[0][0] = pMultiplicacion(matriz1[0][0], matriz2[0][0]);
+				break;
 			case 3:
-				for (int i = 0; i < mSize; ++i) {
-					for (int j = 0; j < mSize; ++j) {
-						resultado = pDivision(matriz1[i][j], matriz2[i][j]);
-						matrizResultado[i][j] = resultado;
-					}
-				}
+				//Division en ASM
+				matrizResultado[0][0] = pDivision(matriz1[0][0], matriz2[0][0]);
+				break;
 			default:
 				break;
 			}
@@ -180,6 +166,13 @@ float** LlenarMatriz(float** matriz) {
 		}
 	}
 	return matriz;
+}
+
+void expMatrices(float** matriz1, float** matriz2) {
+	__asm {
+		MOV eax, ecx
+		MOV ebx, edx
+	}
 }
 
 float pSuma(float numA, float numB) {
