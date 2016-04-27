@@ -1,4 +1,4 @@
-#include "iostream"
+#include <iostream>
 #include "Practica2.h"
 #define MSIZE 4
 
@@ -8,7 +8,7 @@ int main()
 {
 	int input;
 	int operacion;
-	float** matriz1 = AsignarMatriz();
+	float** matriz1 = AsignarMatriz(); 
 	float** matriz2 = AsignarMatriz();
 	float** matrizResultado = AsignarMatriz();
 
@@ -82,20 +82,21 @@ int main()
 		if (operacion != 0) {
 			// Esto no es así porque hay que iterar en Assembler.
 			expMatrices(matriz1,matriz2); //Carga las matrices en posiciones accesibles desde ASM
-			switch (input){
-				case 0:
+			
+			switch (operacion){
+				case 1:
 					//Suma en ASM
 					matrizResultado[0][0] = pSuma(matriz1[0][0], matriz2[0][0]);
 					break;
-				case 1:
+				case 2:
 					//Resta en ASM
 					matrizResultado[0][0] = pResta(matriz1[0][0], matriz2[0][0]);
 					break;
-				case 2:
+				case 3:
 					//Multiplicacion en ASM
 					matrizResultado[0][0] = pMultiplicacion(matriz1[0][0], matriz2[0][0]);
 					break;
-				case 3:
+				case 4:
 					//Division en ASM
 					matrizResultado[0][0] = pDivision(matriz1[0][0], matriz2[0][0]);
 					break;
@@ -176,37 +177,53 @@ void expMatrices(float** matriz1, float** matriz2) {
 }
 
 float pSuma(float numA, float numB) {
+	float resultado=0;
 
 	__asm {
-
+		FLD numA	//Se carga numA en la pila del coprocesador matematico
+		FLD numB	//Se carga numB en la pila del coprocesador matematico
+		FADD ST(0),ST(1)	//Se hace la operacion st(0) = st(0)+st(1)
+		FSTP resultado		//Se guarda el valor de st(0) en resultado y se hace pop
+		FFREE ST(0)			//Se limpia st(0) para que la pila quede limpia
 	}
-
-	return 0.0;
+	return resultado;
 }
 
 float pResta(float numA, float numB) {
-
+	float resultado = 0;
 	__asm {
-
+		FLD numB	//Se agrega primero numB para que este quede en st(1) al agregar numa
+		FLD numA	//Se agrega numA y queda en st(0) en la pila del coprocesador matematico
+		FSUB ST(0),ST(1)	//Se hace la operacion st(0)=st(0)-st(1)
+		FSTP resultado
+		FFREE ST(0)
 	}
-
-	return 0.0;
+	return resultado;
 }
 
 float pMultiplicacion(float numA, float numB) {
-
+	float resultado;
 	__asm {
-
+		FLD numA
+		FLD numB
+		FMUL ST(0),ST(1)
+		FSTP resultado
+		FFREE ST(0)
 	}
 
-	return 0.0;
+	return resultado;
 }
 
 float pDivision(float numA, float numB) {
+	float resultado;
 
 	__asm {
-
+		FLD numB
+		FLD numA
+		FDIV ST(0),ST(1)
+		FSTP resultado
+		FFREE ST(0)
 	}
 
-	return 0.0;
+	return resultado;
 }
