@@ -1,2 +1,3 @@
 ﻿  Pratica2.cpp
+c:\users\jgavi\documents\github\organizacionp2\practica2\practica2\pratica2.cpp(264): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   Practica2.vcxproj -> C:\Users\jgavi\Documents\GitHub\OrganizacionP2\Practica2\Debug\Practica2.exe

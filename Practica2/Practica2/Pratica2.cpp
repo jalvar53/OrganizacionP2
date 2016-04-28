@@ -1,17 +1,27 @@
 #include <iostream>
+#include <math.h>
+#include <time.h>
 #include "Practica2.h"
+
 #define MSIZE 4
 
 using namespace std;
 
 int main()
 {
+	srand((unsigned)time(NULL)); //Se genera la semilla para los numeros aleatorios
 	int input;
 	int operacion;
-	float** matriz1 = AsignarMatriz(); 
-	float** matriz2 = AsignarMatriz();
-	float** matrizResultado = AsignarMatriz();
-
+	float matriz1[MSIZE][MSIZE];
+	float matriz2[MSIZE][MSIZE];
+	float matrizResultado[MSIZE][MSIZE];
+	for (int i = 0; i < MSIZE; i++)
+		for (int j = 0; j < MSIZE; j++) {
+			matrizResultado[i][j] = 0;
+			matriz1[i][j] = 0;
+			matriz2[i][j] = 0;
+		}
+	
 	while(true){ // El programa correra hasta que el usuario escoja cerrarlo
 		input = mostrarMenu(); // Muestra las opciones
 		operacion = 0; // Limpia la operacion anterior si es que existe
@@ -26,18 +36,29 @@ int main()
 				cin >> input;
 				if (input == 1) {
 					cout << "Ingrese los valores para la matriz #1" << endl;
-					matriz1 = LlenarMatriz(matriz1);
+					//matriz1 = LlenarMatriz(matriz1);
+					LlenarMatriz(matriz1);
 				}
 				else if(input == 2){
 					cout << "Ingrese los valores para la matriz #2" << endl;
-					matriz2 = LlenarMatriz(matriz2);
+					//matriz2 = LlenarMatriz(matriz2);
+					LlenarMatriz(matriz2);
 				}
 				break;
 			case 2:
-				//Ingresar toda la matriz por archivo
-				cout << "Operacion aun no soportada." << endl;
-				system("pause");
-				cout << endl;
+				//Llenar la matriz de forma aleatorioa
+				cout << endl << "Escoja la matriz a llenar:" << endl;
+				cout << "1) Matriz #1" << endl;
+				cout << "2) Matriz #2" << endl;
+				cout << "3) Volver al menu." << endl << endl;
+				cout << "Opcion:";
+				cin >> input;
+				if (input == 1) {
+					llenarAleatorios(matriz1);
+				}
+				else if (input == 2) {
+					llenarAleatorios(matriz2);
+				}
 				break;
 			case 3:
 				//Imprimir toda la matriz
@@ -63,15 +84,6 @@ int main()
 				operacion = mostrarOperaciones();
 				break;
 			case 5:
-				//Termina el programa y borra las matrices
-				for (int i = 0; i < MSIZE; i++) {
-					delete[] matriz1[i];
-					delete[] matriz2[i];
-					delete[] matrizResultado[i];
-				}
-				delete[] matriz1;
-				delete[] matriz2;
-				delete[] matrizResultado;
 				exit(1);
 			default:
 				//Excepción
@@ -80,42 +92,79 @@ int main()
 		}
 
 		if (operacion != 0) {
-			// Esto no es así porque hay que iterar en Assembler.
-			expMatrices(matriz1,matriz2); //Carga las matrices en posiciones accesibles desde ASM
-			
-			switch (operacion){
-				case 1:
-					//Suma en ASM
-					_asm {
+			int funcion;	//Guarda la operacion a realizar
+			int iteradorEDX;
+			int iteradorEBX;
 
-					}
-					matrizResultado[0][0] = pSuma(matriz1[0][0], matriz2[0][0]);
-					break;
-				case 2:
-					//Resta en ASM
-					matrizResultado[0][0] = pResta(matriz1[0][0], matriz2[0][0]);
-					break;
-				case 3:
-					//Multiplicacion en ASM
-					matrizResultado[0][0] = pMultiplicacion(matriz1[0][0], matriz2[0][0]);
-					break;
-				case 4:
-					//Division en ASM
-					matrizResultado[0][0] = pDivision(matriz1[0][0], matriz2[0][0]);
-					break;
-				case 5:
-					//TEST PARA SACAR EL VALOR DE LA MATRIZ EN LA POSICION 0,0 DE LA MATRIZ 1 CON ASM
-					float valor;
-					_asm {
-						MOV EAX,matriz1
-						MOV EAX,[EAX]
-						MOV EAX,[EAX]
-						MOV valor,EAX
-					}
-					cout << valor << endl;
-					break;
-				default:
-					break;
+			//Se carga la operacion indicada en la variable funcion para luego ser llamada al recorrer la matriz
+			_asm {
+				MOV EAX,operacion
+				CMP EAX,1
+				JE SUMA
+				CMP EAX,2
+				JE RESTA
+				CMP EAX,3
+				JE MULTIPLICACION
+				CMP EAX,4
+				JE DIVISION
+				JMP FIN
+				SUMA:
+					MOV EAX,pSuma
+					MOV funcion,EAX
+					JMP FIN
+				RESTA:
+					MOV EAX,pResta
+					MOV funcion,EAX
+					JMP FIN
+				MULTIPLICACION:
+					MOV EAX,pMultiplicacion
+					MOV funcion,EAX
+					JMP FIN
+				DIVISION:
+					MOV EAX,pDivision
+					MOV funcion,EAX
+					JMP FIN
+				FIN:
+					NOP
+			}
+
+			//Recorrido de la matriz para realizar la operacion
+			_asm{
+				MOV EDX, 0	//Coloca en cero los iteradores de las filas y las columnas
+				MOV EBX, 0
+				CICLO_DE_RECORRIDO_FILAS:
+					CICLO_DE_RECORRIDO_COLUMNAS:
+						MOV iteradorEDX,EDX	//Se guarda el valor de EDX en la variable iterador pues este registro es usado en la multiplicacion
+						MOV EAX,4	//Se guarda 4 en eax, pues la matriz es de 4 filas
+						MUL EBX		//Se multiplica EBX por 4(EAX) para obtener la posicion del primer dato de la fila
+						MOV EDX, iteradorEDX	//Se carga EDX
+						ADD EAX,EDX	//Se suma la columna a EAX para obtener la posicion exacta en la matriz
+						MOV EAX,matriz2[EAX*TYPE float]	//Se accede a la posicion de la matriz 2 con la direccion de memoria
+						PUSH EAX
+						MOV EAX,4
+						MUL EBX
+						MOV EDX, iteradorEDX
+						ADD EAX,EDX
+						MOV EAX,matriz1[EAX*TYPE float]
+						PUSH EAX
+						MOV EAX,funcion	//Se carga la operacion definida en EAX
+						MOV iteradorEBX,EBX
+						MOV iteradorEDX,EDX
+						CALL EAX	//Se llama la operacion
+						MOV EBX,iteradorEBX
+						MOV EDX,iteradorEDX
+						MOV EAX,4
+						MUL EBX
+						MOV EDX, iteradorEDX
+						ADD EAX,EDX
+						FST matrizResultado[EAX*TYPE float]
+						INC EDX
+						CMP EDX,4
+						JNE CICLO_DE_RECORRIDO_COLUMNAS
+					MOV EDX,0
+					INC EBX
+					CMP EBX,4
+					JNE CICLO_DE_RECORRIDO_FILAS
 			}
 		}
 	}
@@ -125,7 +174,7 @@ int main()
 int mostrarMenu() {
 	cout << endl << "Menu principal:" << endl;
 	cout << "1) Para ingresar una matriz elemento por elemento." << endl;
-	cout << "2) Ingresar una matriz por archivo." << endl;
+	cout << "2) Llenar la matriz con numeros aleatorios." << endl;
 	cout << "3) Imprimir una matriz." << endl;
 	cout << "4) Realizar una operacion sobre las matrices." << endl;
 	cout << "5) Cerrar el programa." << endl << endl;
@@ -148,7 +197,7 @@ int mostrarOperaciones() {
 	return input;
 }
 
-void imprimirMatriz(float** matriz) {
+void imprimirMatriz(float matriz[MSIZE][MSIZE]) {
 	for (int i = 0; i < MSIZE; ++i){
 		cout << endl;
 		for (int j = 0; j < MSIZE; ++j){
@@ -158,54 +207,31 @@ void imprimirMatriz(float** matriz) {
 	cout << endl;
 }
 
-float** AsignarMatriz() {
-	float** matriz;
-	matriz = new float*[MSIZE];
-	for (int i = 0; i < MSIZE; ++i)
-	{
-		matriz[i] = new float[MSIZE];
-	}
-	for (int i = 0; i < MSIZE; ++i) {
-		for (int j = 0; j < MSIZE; ++j) {
-			matriz[i][j] = 0.0;
-		}
-	}
-	return matriz;
-}
-
-float** LlenarMatriz(float** matriz) {
+void LlenarMatriz(float matriz[MSIZE][MSIZE]) {
 	for (int i = 0; i < MSIZE; ++i) {
 		for (int j = 0; j < MSIZE; ++j) {
 			cout << "[" << i << "][" << j << "]: ";
 			cin >> matriz[i][j];
 		}
 	}
-	return matriz;
-}
-
-void expMatrices(float** matriz1, float** matriz2) {
-	__asm {
-		MOV eax, ecx
-		MOV ebx, edx
-	}
+	//return matriz;
 }
 
 float pSuma(float numA, float numB) {
-
 	__asm {
-		FFREE ST(0)	//Se limpia la pila para asegurarse de que nohaya registros anteriores
+		FFREE ST(0)	//Se limpia la pila para asegurarse de que no haya registros anteriores
 		FLD numA	//Se carga numA en la pila del coprocesador matematico
 		FLD numB	//Se carga numB en la pila del coprocesador matematico
 		FADD ST(0),ST(1)	//Se hace la operacion st(0) = st(0)+st(1)
-		FFREE ST(1)			//Se limpia st(1) para que la pila quede limpia
+		FFREE ST(1)			//Se limpia st(1) para que la en la pila solo quede el resultado
 	}
-	//Se retorna el valor que queda en ST(0) automaticamente
+	//El valor de retorno queda en ST(0)
 }
 
 float pResta(float numA, float numB) {
 	__asm {
 		FFREE ST(0)
-		FLD numB	//Se agrega primero numB para que este quede en st(1) al agregar numa
+		FLD numB	//Se agrega primero numB para que este quede en st(1) al agregar numA
 		FLD numA	//Se agrega numA y queda en st(0) en la pila del coprocesador matematico
 		FSUB ST(0),ST(1)	//Se hace la operacion st(0)=st(0)-st(1)
 		FFREE ST(1)
@@ -214,7 +240,7 @@ float pResta(float numA, float numB) {
 
 float pMultiplicacion(float numA, float numB) {
 	__asm {
-		FFREE ST(1)
+		FFREE ST(0)
 		FLD numA
 		FLD numB
 		FMUL ST(0),ST(1)
@@ -230,4 +256,11 @@ float pDivision(float numA, float numB) {
 		FDIV ST(0),ST(1)
 		FFREE ST(1)
 	}
+}
+
+void llenarAleatorios(float matriz[MSIZE][MSIZE]) {
+	for (int i = 0; i < MSIZE; i++)
+		for (int j = 0; j < MSIZE; j++) {
+			matriz[i][j] = (sin((float)rand()) + 1.0)*50.0;
+		}
 }
