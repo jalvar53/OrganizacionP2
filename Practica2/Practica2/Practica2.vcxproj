@@ -152,9 +152,6 @@
   <ItemGroup>
     <ClInclude Include="Practica2.h" />
   </ItemGroup>
-  <ItemGroup>
-    <MASM Include="Operaciones.asm" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />

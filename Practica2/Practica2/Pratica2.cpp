@@ -66,7 +66,8 @@ int main()
 				cout << "1) Matriz #1" << endl;
 				cout << "2) Matriz #2" << endl;
 				cout << "3) Matriz Resultado" << endl;
-				cout << "4) Volver al menu." << endl << endl;
+				cout << "4) Imprimir todas" << endl;
+				cout << "5) Volver al menu." << endl << endl;
 				cout << "Opcion:";
 				cin >> input;
 				if (input == 1) {
@@ -76,6 +77,14 @@ int main()
 					imprimirMatriz(matriz2);
 				}
 				else if(input == 3){
+					imprimirMatriz(matrizResultado);
+				}
+				else if (input == 4) {
+					cout << endl << "Matriz 1:";
+					imprimirMatriz(matriz1);
+					cout << endl << "Matriz 2:";
+					imprimirMatriz(matriz2);
+					cout << endl << "Matriz Resultado:";
 					imprimirMatriz(matrizResultado);
 				}
 				break;
@@ -199,10 +208,11 @@ int mostrarOperaciones() {
 
 void imprimirMatriz(float matriz[MSIZE][MSIZE]) {
 	for (int i = 0; i < MSIZE; ++i){
-		cout << endl;
+		cout << endl << "[|";
 		for (int j = 0; j < MSIZE; ++j){
-			cout << matriz[i][j] << "\t";
+			cout << matriz[i][j] << "|";
 		}
+		cout << "]";
 	}
 	cout << endl;
 }
