@@ -86,6 +86,9 @@ int main()
 			switch (operacion){
 				case 1:
 					//Suma en ASM
+					_asm {
+
+					}
 					matrizResultado[0][0] = pSuma(matriz1[0][0], matriz2[0][0]);
 					break;
 				case 2:
@@ -99,6 +102,17 @@ int main()
 				case 4:
 					//Division en ASM
 					matrizResultado[0][0] = pDivision(matriz1[0][0], matriz2[0][0]);
+					break;
+				case 5:
+					//TEST PARA SACAR EL VALOR DE LA MATRIZ EN LA POSICION 0,0 DE LA MATRIZ 1 CON ASM
+					float valor;
+					_asm {
+						MOV EAX,matriz1
+						MOV EAX,[EAX]
+						MOV EAX,[EAX]
+						MOV valor,EAX
+					}
+					cout << valor << endl;
 					break;
 				default:
 					break;
@@ -177,53 +191,43 @@ void expMatrices(float** matriz1, float** matriz2) {
 }
 
 float pSuma(float numA, float numB) {
-	float resultado=0;
 
 	__asm {
+		FFREE ST(0)	//Se limpia la pila para asegurarse de que nohaya registros anteriores
 		FLD numA	//Se carga numA en la pila del coprocesador matematico
 		FLD numB	//Se carga numB en la pila del coprocesador matematico
 		FADD ST(0),ST(1)	//Se hace la operacion st(0) = st(0)+st(1)
-		FSTP resultado		//Se guarda el valor de st(0) en resultado y se hace pop
-		FFREE ST(0)			//Se limpia st(0) para que la pila quede limpia
+		FFREE ST(1)			//Se limpia st(1) para que la pila quede limpia
 	}
-	return resultado;
+	//Se retorna el valor que queda en ST(0) automaticamente
 }
 
 float pResta(float numA, float numB) {
-	float resultado = 0;
 	__asm {
+		FFREE ST(0)
 		FLD numB	//Se agrega primero numB para que este quede en st(1) al agregar numa
 		FLD numA	//Se agrega numA y queda en st(0) en la pila del coprocesador matematico
 		FSUB ST(0),ST(1)	//Se hace la operacion st(0)=st(0)-st(1)
-		FSTP resultado
-		FFREE ST(0)
+		FFREE ST(1)
 	}
-	return resultado;
 }
 
 float pMultiplicacion(float numA, float numB) {
-	float resultado;
 	__asm {
+		FFREE ST(1)
 		FLD numA
 		FLD numB
 		FMUL ST(0),ST(1)
-		FSTP resultado
-		FFREE ST(0)
+		FFREE ST(1)
 	}
-
-	return resultado;
 }
 
 float pDivision(float numA, float numB) {
-	float resultado;
-
 	__asm {
+		FFREE ST(0)
 		FLD numB
 		FLD numA
 		FDIV ST(0),ST(1)
-		FSTP resultado
-		FFREE ST(0)
+		FFREE ST(1)
 	}
-
-	return resultado;
 }
