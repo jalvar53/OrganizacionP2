@@ -37,12 +37,12 @@ int main()
 				if (input == 1) {
 					cout << "Ingrese los valores para la matriz #1" << endl;
 					//matriz1 = LlenarMatriz(matriz1);
-					LlenarMatriz(matriz1);
+					llenarMatriz(matriz1);
 				}
 				else if(input == 2){
 					cout << "Ingrese los valores para la matriz #2" << endl;
 					//matriz2 = LlenarMatriz(matriz2);
-					LlenarMatriz(matriz2);
+					llenarMatriz(matriz2);
 				}
 				break;
 			case 2:
@@ -217,7 +217,7 @@ void imprimirMatriz(float matriz[MSIZE][MSIZE]) {
 	cout << endl;
 }
 
-void LlenarMatriz(float matriz[MSIZE][MSIZE]) {
+void llenarMatriz(float matriz[MSIZE][MSIZE]) {
 	for (int i = 0; i < MSIZE; ++i) {
 		for (int j = 0; j < MSIZE; ++j) {
 			cout << "[" << i << "][" << j << "]: ";
