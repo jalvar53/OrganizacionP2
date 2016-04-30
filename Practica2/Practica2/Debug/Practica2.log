@@ -1,1 +1,4 @@
-﻿  Practica2.vcxproj -> C:\Users\josel\Documents\OrganizacionP2\Practica2\Debug\Practica2.exe
+﻿  Pratica2.cpp
+c:\users\jgavi\documents\github\organizacionp2\practica2\practica2\pratica2.cpp(276): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  LINK : C:\Users\jgavi\Documents\GitHub\OrganizacionP2\Practica2\Debug\Practica2.exe not found or not built by the last incremental link; performing full link
+  Practica2.vcxproj -> C:\Users\jgavi\Documents\GitHub\OrganizacionP2\Practica2\Debug\Practica2.exe

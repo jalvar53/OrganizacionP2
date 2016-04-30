@@ -104,6 +104,7 @@ int main()
 			int funcion;	//Guarda la operacion a realizar
 			int iteradorEDX;
 			int iteradorEBX;
+			int recolector;
 
 			//Se carga la operacion indicada en la variable funcion para luego ser llamada al recorrer la matriz
 			_asm {
@@ -160,6 +161,8 @@ int main()
 						MOV iteradorEBX,EBX
 						MOV iteradorEDX,EDX
 						CALL EAX	//Se llama la operacion
+						POP recolector
+						POP recolector
 						MOV EBX,iteradorEBX
 						MOV EDX,iteradorEDX
 						MOV EAX,4
